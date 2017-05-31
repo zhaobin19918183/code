@@ -30,7 +30,6 @@
 		469F4D321B749FEC00666A46 /* EZAudioUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 469F4D121B749FEC00666A46 /* EZAudioUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		469F4D331B749FEC00666A46 /* EZAudioUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 469F4D131B749FEC00666A46 /* EZAudioUtilities.m */; };
 		469F4D341B749FEC00666A46 /* EZMicrophone.h in Headers */ = {isa = PBXBuildFile; fileRef = 469F4D141B749FEC00666A46 /* EZMicrophone.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		469F4D351B749FEC00666A46 /* EZMicrophone.m in Sources */ = {isa = PBXBuildFile; fileRef = 469F4D151B749FEC00666A46 /* EZMicrophone.m */; };
 		469F4D361B749FEC00666A46 /* EZOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 469F4D161B749FEC00666A46 /* EZOutput.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		469F4D371B749FEC00666A46 /* EZOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 469F4D171B749FEC00666A46 /* EZOutput.m */; };
 		469F4D381B749FEC00666A46 /* EZPlot.h in Headers */ = {isa = PBXBuildFile; fileRef = 469F4D181B749FEC00666A46 /* EZPlot.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -39,6 +38,7 @@
 		469F4D3B1B749FEC00666A46 /* EZRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 469F4D1B1B749FEC00666A46 /* EZRecorder.m */; };
 		469F4D3C1B749FEC00666A46 /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 469F4D1C1B749FEC00666A46 /* TPCircularBuffer.c */; };
 		469F4D3D1B749FEC00666A46 /* TPCircularBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 469F4D1D1B749FEC00666A46 /* TPCircularBuffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8A2276931EDEC8C200C61029 /* EZMicrophone.m in Sources */ = {isa = PBXBuildFile; fileRef = 469F4D151B749FEC00666A46 /* EZMicrophone.m */; };
 		8A5A4BB31BBBDD6D00A8A048 /* EZAudio.h in Headers */ = {isa = PBXBuildFile; fileRef = 469F4CFE1B749FEC00666A46 /* EZAudio.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8A5A4BB41BBBDD6D00A8A048 /* EZAudioDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 469F4D001B749FEC00666A46 /* EZAudioDevice.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8A5A4BB51BBBDD6D00A8A048 /* EZAudioDisplayLink.h in Headers */ = {isa = PBXBuildFile; fileRef = 469F4D021B749FEC00666A46 /* EZAudioDisplayLink.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -347,6 +347,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A2276931EDEC8C200C61029 /* EZMicrophone.m in Sources */,
 				469F4D2F1B749FEC00666A46 /* EZAudioPlot.m in Sources */,
 				469F4D2D1B749FEC00666A46 /* EZAudioPlayer.m in Sources */,
 				469F4D251B749FEC00666A46 /* EZAudioFFT.m in Sources */,
@@ -358,7 +359,6 @@
 				469F4D311B749FEC00666A46 /* EZAudioPlotGL.m in Sources */,
 				469F4D331B749FEC00666A46 /* EZAudioUtilities.m in Sources */,
 				469F4D2B1B749FEC00666A46 /* EZAudioFloatData.m in Sources */,
-				469F4D351B749FEC00666A46 /* EZMicrophone.m in Sources */,
 				469F4D271B749FEC00666A46 /* EZAudioFile.m in Sources */,
 				469F4D231B749FEC00666A46 /* EZAudioDisplayLink.m in Sources */,
 				469F4D371B749FEC00666A46 /* EZOutput.m in Sources */,
@@ -580,6 +580,7 @@
 				8A5A4BAF1BBBDCB200A8A048 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

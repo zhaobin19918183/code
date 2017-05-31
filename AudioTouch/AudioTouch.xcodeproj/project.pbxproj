@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8A2276951EDECAA800C61029 /* EZAudioiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2276901EDEC7B800C61029 /* EZAudioiOS.framework */; };
 		8A54A0DB1ED5253A00E3913D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A54A0DA1ED5253A00E3913D /* main.m */; };
 		8A54A0DE1ED5253A00E3913D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A54A0DD1ED5253A00E3913D /* AppDelegate.m */; };
 		8A54A0E11ED5253A00E3913D /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A54A0E01ED5253A00E3913D /* ViewController.mm */; };
@@ -34,16 +35,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		8A2276851EDEBF8200C61029 /* PBXContainerItemProxy */ = {
+		8A22768F1EDEC7B800C61029 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 8A22767F1EDEBF8100C61029 /* EZAudio.xcodeproj */;
+			containerPortal = 8A22768A1EDEC7B700C61029 /* EZAudio.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 469F4CF31B749F7800666A46;
 			remoteInfo = EZAudioiOS;
 		};
-		8A2276871EDEBF8200C61029 /* PBXContainerItemProxy */ = {
+		8A2276911EDEC7B800C61029 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 8A22767F1EDEBF8100C61029 /* EZAudio.xcodeproj */;
+			containerPortal = 8A22768A1EDEC7B700C61029 /* EZAudio.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 8A5A4B9C1BBBDCB200A8A048;
 			remoteInfo = EZAudioOSX;
@@ -100,7 +101,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		8A22767F1EDEBF8100C61029 /* EZAudio.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EZAudio.xcodeproj; path = AudioTouch/EZAudio.xcodeproj; sourceTree = "<group>"; };
+		8A22768A1EDEC7B700C61029 /* EZAudio.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EZAudio.xcodeproj; path = AudioTouch/EZAudio.xcodeproj; sourceTree = "<group>"; };
 		8A54A0D61ED5253A00E3913D /* AudioTouch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AudioTouch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A54A0DA1ED5253A00E3913D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8A54A0DC1ED5253A00E3913D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -147,6 +148,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A2276951EDECAA800C61029 /* EZAudioiOS.framework in Frameworks */,
 				8A54A1331ED5540400E3913D /* AVFoundation.framework in Frameworks */,
 				8A54A1261ED52D6600E3913D /* CoreGraphics.framework in Frameworks */,
 				8A54A1241ED52D5D00E3913D /* OpenGLES.framework in Frameworks */,
@@ -176,11 +178,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		8A2276801EDEBF8100C61029 /* Products */ = {
+		8A22768B1EDEC7B700C61029 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8A2276861EDEBF8200C61029 /* EZAudioiOS.framework */,
-				8A2276881EDEBF8200C61029 /* EZAudioOSX.framework */,
+				8A2276901EDEC7B800C61029 /* EZAudioiOS.framework */,
+				8A2276921EDEC7B800C61029 /* EZAudioOSX.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -188,7 +190,7 @@
 		8A54A0CD1ED5253900E3913D = {
 			isa = PBXGroup;
 			children = (
-				8A22767F1EDEBF8100C61029 /* EZAudio.xcodeproj */,
+				8A22768A1EDEC7B700C61029 /* EZAudio.xcodeproj */,
 				8A71B9811ED7C64B00AD3B8E /* Charts.xcodeproj */,
 				8A54A0D81ED5253A00E3913D /* AudioTouch */,
 				8A54A0F21ED5253A00E3913D /* AudioTouchTests */,
@@ -373,8 +375,9 @@
 				TargetAttributes = {
 					8A54A0D51ED5253A00E3913D = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = K5969T4PP6;
 						LastSwiftMigration = 0830;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					8A54A0EE1ED5253A00E3913D = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -405,8 +408,8 @@
 					ProjectRef = 8A71B9811ED7C64B00AD3B8E /* Charts.xcodeproj */;
 				},
 				{
-					ProductGroup = 8A2276801EDEBF8100C61029 /* Products */;
-					ProjectRef = 8A22767F1EDEBF8100C61029 /* EZAudio.xcodeproj */;
+					ProductGroup = 8A22768B1EDEC7B700C61029 /* Products */;
+					ProjectRef = 8A22768A1EDEC7B700C61029 /* EZAudio.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -419,18 +422,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		8A2276861EDEBF8200C61029 /* EZAudioiOS.framework */ = {
+		8A2276901EDEC7B800C61029 /* EZAudioiOS.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = EZAudioiOS.framework;
-			remoteRef = 8A2276851EDEBF8200C61029 /* PBXContainerItemProxy */;
+			remoteRef = 8A22768F1EDEC7B800C61029 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		8A2276881EDEBF8200C61029 /* EZAudioOSX.framework */ = {
+		8A2276921EDEC7B800C61029 /* EZAudioOSX.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = EZAudioOSX.framework;
-			remoteRef = 8A2276871EDEBF8200C61029 /* PBXContainerItemProxy */;
+			remoteRef = 8A2276911EDEC7B800C61029 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		8A71B9871ED7C64C00AD3B8E /* Charts.framework */ = {
@@ -646,12 +649,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
-				GCC_PREFIX_HEADER = "/Users/newland/Desktop/AudioTouch/AudioTouch/DetectingSoundFrequency-Prefix.pch";
+				DEVELOPMENT_TEAM = K5969T4PP6;
+				GCC_PREFIX_HEADER = "/Users/newland/code/AudioTouch/AudioTouch/DetectingSoundFrequency-Prefix.pch";
 				INFOPLIST_FILE = AudioTouch/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = co.jiuxiang.jxzs;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = co.jiuxiang.jx;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -659,6 +663,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "armv7 armv7s arm64";
 			};
 			name = Debug;
 		};
@@ -669,18 +674,20 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
-				GCC_PREFIX_HEADER = "/Users/newland/Desktop/AudioTouch/AudioTouch/DetectingSoundFrequency-Prefix.pch";
+				DEVELOPMENT_TEAM = K5969T4PP6;
+				GCC_PREFIX_HEADER = "/Users/newland/code/AudioTouch/AudioTouch/DetectingSoundFrequency-Prefix.pch";
 				INFOPLIST_FILE = AudioTouch/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = co.jiuxiang.jxzs;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = co.jiuxiang.jx;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "AudioTouch/Chart/AudioTouch-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "armv7 armv7s arm64";
 			};
 			name = Release;
 		};
