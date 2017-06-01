@@ -145,6 +145,8 @@ void AudioCallback( Float32 * buffer, UInt32 frameSize, void * userData )
     AVAudioRecorder  *recorder;
     NSTimer   *levelTimer;
     UITableView *bgView;
+    NSUserDefaults *yData;
+    NSMutableArray *yArray;
 }
 
 
@@ -161,7 +163,11 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
 {
     return UIStatusBarStyleLightContent;
 }
-
+-(void)viewWillAppear:(BOOL)animated
+{
+   yData = [NSUserDefaults standardUserDefaults];
+    yArray =[NSMutableArray array];
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     //折线图
@@ -199,7 +205,7 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
     // Setup time domain audio plot
     //
     self.audioPlotTime.plotType = EZPlotTypeBuffer;
-    self.audioPlotTime.gain =30.0;
+   
 
     
     //
@@ -285,14 +291,9 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
     }
     
     /* level 范围[0 ~ 1], 转为[0 ~120] 之间 */
-    
-    NSLog(@"分贝 -====== --=== %@",[NSString stringWithFormat:@"%f", level*120]);
-    
-    NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:[NSString stringWithFormat:@"%f",level*120],@"db", nil];
-    //创建通知
-    NSNotification *notification =[NSNotification notificationWithName:@"fenbei" object:nil userInfo:dict];
-    //通过通知中心发送通知
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    [yArray addObject:[NSString stringWithFormat:@"%f", level*120]];
+    [yData setObject:yArray forKey:@"ydata"];
+    [bgView reloadData];
 }
 
 -(void) initMomuAudio {
@@ -310,12 +311,13 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
 -(void)lineChart{
     bgView = [[UITableView alloc] initWithFrame:
               CGRectMake(0,
-                         20,
+                         0,
                          self.view.frame.size.width,
-                         self.view.frame.size.height-20)];
+                         self.view.frame.size.height)];
     bgView.backgroundColor = [UIColor blackColor];
     bgView.delegate = self;
     bgView.dataSource = self;
+    bgView.scrollEnabled = NO;
     bgView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:bgView];
     
@@ -345,6 +347,11 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundColor = [UIColor clearColor];
+  /*  _audioPlotTime =[[EZAudioPlot alloc]initWithFrame:CGRectMake(20, 300, cell.bounds.size.width, 200)];
+    _audioPlotTime.backgroundColor =[UIColor clearColor];
+    _audioPlotTime.color =[UIColor whiteColor];
+     self.audioPlotTime.gain = 100;
+    [cell addSubview:_audioPlotTime];*/
     cell.delegate = self;
     return cell;
 }

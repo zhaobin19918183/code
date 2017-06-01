@@ -54,7 +54,7 @@
     gridColor = RGBA(204, 204, 204, 1);//网格线颜色
     valueColor = [UIColor cyanColor];//拐点处文字颜色
     lineColor = [UIColor cyanColor];//折线颜色
-    customXLabelCount = 0;//自定义的 x 轴数量
+    customXLabelCount = 100;//自定义的 x 轴数量
     copyArray = [[NSMutableArray alloc]init];
     chartView = [[LineChartView alloc] init];
 }
@@ -66,15 +66,19 @@
         chartView.backgroundColor =  [UIColor blackColor];
         chartView.descriptionText = @"";
         chartView.noDataText = @"暂无数据";
+        chartView.chartDescription.enabled = YES;
         chartView.scaleYEnabled = NO;//Y轴缩放
-        chartView.scaleXEnabled = NO;//X轴缩放
         chartView.doubleTapToZoomEnabled = NO;//取消双击缩放
-        chartView.dragEnabled = NO;//启用拖拽图标
-        chartView.dragDecelerationEnabled = NO;//拖拽后是否有惯性效果
+        chartView.dragEnabled = YES;//启用拖拽图标
+        chartView.dragDecelerationEnabled = YES;//拖拽后是否有惯性效果
         [chartView setDescriptionFont:[UIFont systemFontOfSize:13]];//描述字体大小
         [chartView setDescriptionTextColor: descriptionColor];//文字描述
         chartView.rightAxis.enabled = NO;//不绘制右边轴
-        chartView.legend.form = ChartLegendFormNone;
+        chartView.dragDecelerationFrictionCoef = 0.9;//拖拽后惯性效果的摩擦系数(0~1)，数值越小，惯性越不明显
+        //设置滑动时候标签
+
+        
+       // [chartView fitScreen];
         
         //设置X轴样式
         ChartXAxis *xAxis = chartView.xAxis;
@@ -83,10 +87,14 @@
         xAxis.drawGridLinesEnabled = YES;//不绘制网格线
         xAxis.labelTextColor = [UIColor grayColor];//label文字颜色
         xAxis.avoidFirstLastClippingEnabled = YES;//两端对齐
-        xAxis.labelCount = 7;
+        xAxis.labelCount = 11;
+        //xAxis.labelWidth = 1000;
+        
         xAxis.forceLabelsEnabled = YES;
         xAxis.axisMinimum = 0;
-        xAxis.axisMaximum = 60;
+        xAxis.axisMaximum = 100;
+        chartView.maxVisibleCount = 100000000;
+       
         
         //设置Y轴样式
         leftAxis = chartView.leftAxis;//获取左边Y轴
@@ -142,7 +150,8 @@
                 [entryArray addObject:entry];
             }
             LineChartDataSet *set = [[LineChartDataSet alloc] initWithValues:entryArray label:@""];
-            set.drawCirclesEnabled = NO;//是否绘制拐点
+            set.drawCirclesEnabled = YES;//是否绘制拐点
+            set.circleRadius = 1;
             [dataSets addObject:set];
         }
         
@@ -158,7 +167,9 @@
         //创建 LineChartData 对象, 此对象就是lineChartView需要最终数据对象
         NSMutableArray *array = [[NSMutableArray alloc]init];
         array = [self creatLineChartData:self.chartDataDic];
+        
         LineChartData *data = [[LineChartData alloc] initWithDataSets:array];
+
         chartView.data = data;
         //绘图
         [self.addView addSubview:chartView];
