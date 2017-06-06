@@ -33,6 +33,7 @@
 		8A71B98B1ED7C74600AD3B8E /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A71B9871ED7C64C00AD3B8E /* Charts.framework */; };
 		8A71B98C1ED7C74600AD3B8E /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8A71B9871ED7C64C00AD3B8E /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8A71B9911ED7D1E000AD3B8E /* LineChartCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A71B9901ED7D1E000AD3B8E /* LineChartCell.m */; };
+		8AD3A7111EE52D1100F25A53 /* SPView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AD3A7101EE52D1100F25A53 /* SPView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -150,6 +151,8 @@
 		8A71B9811ED7C64B00AD3B8E /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Charts.xcodeproj; path = AudioTouch/Chart/LineChart/Charts.xcodeproj; sourceTree = "<group>"; };
 		8A71B98F1ED7D1E000AD3B8E /* LineChartCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LineChartCell.h; sourceTree = "<group>"; };
 		8A71B9901ED7D1E000AD3B8E /* LineChartCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LineChartCell.m; sourceTree = "<group>"; };
+		8AD3A7101EE52D1100F25A53 /* SPView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPView.m; sourceTree = "<group>"; };
+		8AD3A7141EE52D1800F25A53 /* SPView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPView.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -296,6 +299,8 @@
 		8A71B96C1ED7C33000AD3B8E /* Chart */ = {
 			isa = PBXGroup;
 			children = (
+				8AD3A7141EE52D1800F25A53 /* SPView.h */,
+				8AD3A7101EE52D1100F25A53 /* SPView.m */,
 				8A71B97C1ED7C3B300AD3B8E /* LineChart.swift */,
 				8A71B97B1ED7C3B200AD3B8E /* AudioTouch-Bridging-Header.h */,
 				8A71B97E1ED7C3DD00AD3B8E /* LienChartView.h */,
@@ -503,6 +508,7 @@
 				8A54A0DB1ED5253A00E3913D /* main.m in Sources */,
 				8A54A1311ED5397C00E3913D /* mo_gfx.mm in Sources */,
 				8A71B9801ED7C3DD00AD3B8E /* LienChartView.m in Sources */,
+				8AD3A7111EE52D1100F25A53 /* SPView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

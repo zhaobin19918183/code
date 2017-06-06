@@ -10,7 +10,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "mo_audio.h" //stuff that helps set up low-level audio
 #import "FFTHelper.h"
-
+#import "SPView.h"
 
 #define SAMPLE_RATE 44100  //22050 //44100
 #define FRAMESIZE  512
@@ -129,7 +129,7 @@ void AudioCallback( Float32 * buffer, UInt32 frameSize, void * userData )
        Float32 maxHZValue = 0;
        Float32 maxHZ = strongestFrequencyHZ(dataAccumulator, fftConverter, accumulatorDataLenght, &maxHZValue);
         hzString = [NSString stringWithFormat:@"%0.3f",maxHZ];
-       NSLog(@" max HZ = %0.3f ", maxHZ);
+     //  NSLog(@" max HZ = %0.3f ", maxHZ);
        
        
         
@@ -147,6 +147,10 @@ void AudioCallback( Float32 * buffer, UInt32 frameSize, void * userData )
     UITableView *bgView;
     NSUserDefaults *yData;
     NSMutableArray *yArray;
+    NSString *fbString;
+    NSTimer *reloadTime;
+    UILabel *label;
+    SPView *spview;
 }
 
 
@@ -178,9 +182,31 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
     fftConverter = FFTHelperCreate(accumulatorDataLenght);
     initializeAccumulator();
     [self initMomuAudio];
-    [self dbAction];
     [self hzAudio];
+    [self dbAction];
+  //  [self  timeFB];
+    
+    UITapGestureRecognizer *tapHide = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewTapped:)];
+    tapHide.cancelsTouchesInView = NO;
+    
+    [self.view addGestureRecognizer:tapHide];
+    
+ 
+    
+    
 }
+-(void)viewTapped:(UITapGestureRecognizer*)tapGr
+{
+    [self.view endEditing:YES];
+}
+-(void)timeFB
+{
+
+    reloadTime = [NSTimer scheduledTimerWithTimeInterval:0.001 target:self selector:@selector(reloadState:) userInfo:nil repeats:YES];
+    
+    [[NSRunLoop mainRunLoop] addTimer:reloadTime forMode:NSRunLoopCommonModes];
+}
+
 
 -(void)hzAudio
 {
@@ -254,7 +280,7 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
         [recorder prepareToRecord];
         recorder.meteringEnabled = YES;
         [recorder record];
-        levelTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target: self selector: @selector(levelTimerCallback:) userInfo: nil repeats: YES];
+        levelTimer = [NSTimer scheduledTimerWithTimeInterval:0.001 target: self selector: @selector(levelTimerCallback:) userInfo: nil repeats: YES];
     }
     else
     {
@@ -289,11 +315,30 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
         
         level = powf(adjAmp, 1.0f / root);
     }
-    
+    fbString = [NSString stringWithFormat:@"db:%f",level*120];
     /* level 范围[0 ~ 1], 转为[0 ~120] 之间 */
     [yArray addObject:[NSString stringWithFormat:@"%f", level*120]];
-    [yData setObject:yArray forKey:@"ydata"];
-    [bgView reloadData];
+
+    [yData setValue:yArray forKey:@"ydata"];
+ //
+    
+ 
+   //
+}
+
+- (void)reloadState:(NSTimer *)t{
+
+       // sView.mpointArr = [NSMutableArray arrayWithArray:self.pointArr];
+    
+    
+    if (yArray.count > 100)
+    {
+        [yArray removeAllObjects];
+        [[NSUserDefaults standardUserDefaults]removePersistentDomainForName:@"ydata"];
+        [bgView reloadData];
+    }
+  
+    
 }
 
 -(void) initMomuAudio {
@@ -309,6 +354,12 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
 
 
 -(void)lineChart{
+    
+    UILongPressGestureRecognizer * longPressGr = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressToDo:)];
+    longPressGr.minimumPressDuration = 0.25;
+    [self.view addGestureRecognizer:longPressGr];
+   
+    
     bgView = [[UITableView alloc] initWithFrame:
               CGRectMake(0,
                          0,
@@ -319,26 +370,47 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
     bgView.dataSource = self;
     bgView.scrollEnabled = NO;
     bgView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    
     [self.view addSubview:bgView];
+    label = [[UILabel alloc]init];
+    label.hidden = YES;
+    //label.backgroundColor =[UIColor lightGrayColor];
+    label.textColor = [UIColor whiteColor];
+    
+    [self.view addSubview:label];
     
     
 }
-
+-(void)longPressToDo:(UILongPressGestureRecognizer *)gesture
+{
+    CGPoint point = [gesture locationInView:self.view];
+    label.frame = CGRectMake(point.x, point.y -100, 400, 50);
+    if (gesture.state == UIGestureRecognizerStateBegan) {
+        // do something
+        label.hidden= NO;
+    }else if (gesture.state == UIGestureRecognizerStateEnded){
+        // do something
+        label.hidden= YES;
+    }
+    
+    
+}
 -(void)bottomBtn{
     
 }
 
-//设置cell数量
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return 1;
 }
 
-//设置高度为tableview的高度
+
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return tableView.frame.size.height;
 }
 
-//设置复用
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *reuse = @"reuse";
     LineChartCell *cell = [tableView dequeueReusableCellWithIdentifier:reuse];
@@ -347,11 +419,15 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundColor = [UIColor clearColor];
-  /*  _audioPlotTime =[[EZAudioPlot alloc]initWithFrame:CGRectMake(20, 300, cell.bounds.size.width, 200)];
+    _audioPlotTime =[[EZAudioPlot alloc]initWithFrame:CGRectMake(25, 300, cell.bounds.size.width, 200)];
     _audioPlotTime.backgroundColor =[UIColor clearColor];
     _audioPlotTime.color =[UIColor whiteColor];
-     self.audioPlotTime.gain = 100;
-    [cell addSubview:_audioPlotTime];*/
+     self.audioPlotTime.gain = 300;
+    [cell addSubview:_audioPlotTime];
+   /* spview =[[SPView alloc]initWithFrame:CGRectMake(25, 25, cell.bounds.size.width, cell.bounds.size.height - 120)];
+    spview.backgroundColor =[UIColor clearColor];
+    [cell addSubview:spview];*/
+    
     cell.delegate = self;
     return cell;
 }
@@ -385,18 +461,19 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
          bufferSize:(vDSP_Length)bufferSize
 {
     float maxFrequency = [fft maxFrequency];
-    NSString *noteName = [EZAudioUtilities noteNameStringForFrequency:maxFrequency
-                                                        includeOctave:YES];
+   // NSString *noteName = [EZAudioUtilities noteNameStringForFrequency:maxFrequency
+   //                                                     includeOctave:YES];
     
     __weak typeof (self) weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
-       NSString *string = [NSString stringWithFormat:@"Highest Note: %@,\nFrequency: %.2f", noteName, maxFrequency];
-        NSLog(@"%@",string);
+       NSString *string = [NSString stringWithFormat:@"hz:%.2f %@",  maxFrequency,fbString];
+       // NSLog(@"%@",string);
+        label.text = string;
         [weakSelf.audioPlotFreq updateBuffer:fftData withBufferSize:(UInt32)bufferSize];
     });
 }
+-(void)reloadView
+{
 
--(void)reloadView{
-    [bgView reloadData];
 }
 @end

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "LineChartCell.h"
-
+#import <AVFoundation/AVFoundation.h>
 #include "EZAudio/EZAudio.h"
 
 @protocol DBDelegate <NSObject>
@@ -17,11 +17,11 @@
 
 @end
 
-@interface ViewController : UIViewController<EZMicrophoneDelegate, EZAudioFFTDelegate>
+@interface ViewController : UIViewController<EZMicrophoneDelegate, EZAudioFFTDelegate,AVCaptureAudioDataOutputSampleBufferDelegate,UIGestureRecognizerDelegate>
 
 typedef void(^SelectedRoomBlock)(NSString *hzStr);
 @property (nonatomic, copy) SelectedRoomBlock selectedRoomBlock;
-/**代理*/
+
 @property(nonatomic,weak)id<DBDelegate>delegate;
 
 // EZAudioPlot for frequency plot
@@ -48,7 +48,11 @@ typedef void(^SelectedRoomBlock)(NSString *hzStr);
 // Used to calculate a rolling FFT of the incoming audio data.
 //
 @property (nonatomic, strong) EZAudioFFTRolling *fft;
+@property(strong,nonatomic) AVCaptureSession *captureSession;
 
+@property(strong,nonatomic) AVCaptureDeviceInput *captureDeviceInput;
+
+@property(strong,nonatomic) AVCaptureAudioDataOutput *captureAudioDataOutput;
 
 @end
 

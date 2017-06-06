@@ -25,25 +25,26 @@
             lineChartView = [[LienChartView alloc]initWithFrame:CGRectZero];
             lineChartView.yAxisColor = [UIColor whiteColor];
             lineChartView.xAxisColor = [UIColor whiteColor];
-            //添加视图
+           
             lineChartView.addView = self;
             [self creatSubview];
         }
         return self;
     } @catch (NSException *exception) {
-        NSLog(@"==========%s出错:%@==========",__func__,exception);
+     
     }
 }
 -(void)creatSubview{
-    NSUserDefaults *ydata = [NSUserDefaults standardUserDefaults];
+  /*  NSUserDefaults *ydata = [NSUserDefaults standardUserDefaults];
      yLine  = [ ydata objectForKey:@"ydata"];
     NSLog(@"yLine.count === %lu",(unsigned long)yLine.count);
     
      for (int i=0; i<yLine.count; i++)
      {
-          [dataArray addObject:[lineChartView setLinChartData:1*i y:[yLine[i]  floatValue]]];
+          [dataArray addObject:[lineChartView setLinChartData:i y:[yLine[i]  floatValue]]];
     }
-   // [dataArray addObject:[lineChartView setLinChartData:0 y:0]];
+   */
+    [dataArray addObject:[lineChartView setLinChartData:0 y:0]];
  
     [lineChartView.chartDataDic setObject:dataArray forKey:@"0"];
     //frame
