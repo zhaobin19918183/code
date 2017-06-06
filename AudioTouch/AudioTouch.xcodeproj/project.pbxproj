@@ -671,7 +671,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = K5969T4PP6;
-				GCC_PREFIX_HEADER = "/Users/newland/code/AudioTouch/AudioTouch/DetectingSoundFrequency-Prefix.pch";
+				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/AudioTouch/DetectingSoundFrequency-Prefix.pch";
 				INFOPLIST_FILE = AudioTouch/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -696,7 +698,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = K5969T4PP6;
-				GCC_PREFIX_HEADER = "/Users/newland/code/AudioTouch/AudioTouch/DetectingSoundFrequency-Prefix.pch";
+				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/AudioTouch/DetectingSoundFrequency-Prefix.pch";
 				INFOPLIST_FILE = AudioTouch/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

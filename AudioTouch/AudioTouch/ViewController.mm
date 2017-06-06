@@ -40,13 +40,6 @@ static void initializeAccumulator() {
     dataAccumulator = (Float32*) malloc(sizeof(Float32)*accumulatorDataLenght);
     accumulatorFillIndex = 0;
 }
-static void destroyAccumulator() {
-    if (dataAccumulator!=NULL) {
-        free(dataAccumulator);
-        dataAccumulator = NULL;
-    }
-    accumulatorFillIndex = 0;
-}
 
 static BOOL accumulateFrames(Float32 *frames, UInt32 lenght) { //returned YES if full, NO otherwise.
     //    float zero = 0.0;
@@ -419,7 +412,7 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundColor = [UIColor clearColor];
-    _audioPlotTime =[[EZAudioPlot alloc]initWithFrame:CGRectMake(25, 300, cell.bounds.size.width, 200)];
+    _audioPlotTime =[[EZAudioPlot alloc]initWithFrame:CGRectMake(25, cell.bounds.size.height/3, cell.bounds.size.width, cell.bounds.size.height/2)];
     _audioPlotTime.backgroundColor =[UIColor clearColor];
     _audioPlotTime.color =[UIColor whiteColor];
      self.audioPlotTime.gain = 300;
