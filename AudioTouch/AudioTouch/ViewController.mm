@@ -248,7 +248,7 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
    // FFT;
     int ffthalfsize = FFTSIZE/2;
     
-    float *magnitude = (float *)malloc(sizeof(float)*ffthalfsize);
+    float *magnitude = (float *)malloc(sizeof(float)*ffthalfsize);  //动态分配ffthalfsize个连续的float内存地址
     DSPSplitComplex *SplitComplex = new DSPSplitComplex;
     SplitComplex->realp = (float *)malloc(sizeof(float)*ffthalfsize);
     SplitComplex->imagp = (float *)malloc(sizeof(float)*ffthalfsize);
@@ -258,6 +258,7 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
         NSLog(@" magnitude ==  %f",magnitude[i]);
         
     }
+
     
 }
 -(void)viewTapped:(UITapGestureRecognizer*)tapGr
