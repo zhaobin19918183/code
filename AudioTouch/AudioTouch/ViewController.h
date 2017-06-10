@@ -10,6 +10,8 @@
 #import "LineChartCell.h"
 #import <AVFoundation/AVFoundation.h>
 #include "EZAudio/EZAudio.h"
+#import <Accelerate/Accelerate.h>
+
 
 @protocol DBDelegate <NSObject>
 

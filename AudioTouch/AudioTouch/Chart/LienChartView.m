@@ -8,6 +8,17 @@
 
 #import "LienChartView.h"
 
+#define FRAMESIZE  512
+#define NUMCHANNELS 2
+
+#define kOutputBus 0
+#define kInputBus 1
+#define PAI 3.14159265358979323846264338 // PAI
+#define SAMPLE_RATE 44100 //sampling rate
+#define LENGTH 4 // 4 seconds
+#define AMPLITUDE 1.0// 16bit
+#define FREQUENCY 440 // frequency Hz
+#define FFTSIZE 2048
 
 @implementation LienChartView{
     //
@@ -38,6 +49,19 @@
         self = [super initWithFrame:frame];
         if (self) {
             [self initData];
+            
+//            int ffthalfsize = FFTSIZE/2;
+//            
+//            float *magnitude = malloc(sizeof(float)*ffthalfsize);
+////            DSPSplitComplex *SplitComplex;
+////            vDSP_zvabs(SplitComplex, 1, magnitude, 1, ffthalfsize);
+//            for (int i=0;i<ffthalfsize;i++)
+//            {
+//                NSLog(@" magnitude ==  %.40f",magnitude[i]);
+//                
+//            }
+           
+            
         }
         return self;
     } @catch (NSException *exception) {

@@ -11,13 +11,20 @@
 #import "mo_audio.h" //stuff that helps set up low-level audio
 #import "FFTHelper.h"
 #import "SPView.h"
+#include <stdio.h>
 
-#define SAMPLE_RATE 44100  //22050 //44100
+
 #define FRAMESIZE  512
 #define NUMCHANNELS 2
 
 #define kOutputBus 0
 #define kInputBus 1
+#define PAI 3.14159265358979323846264338 // PAI
+#define SAMPLE_RATE 44100 //sampling rate
+#define LENGTH 4 // 4 seconds
+#define AMPLITUDE 1.0// 16bit
+#define FREQUENCY 440 // frequency Hz
+#define FFTSIZE 2048
 
 /// Nyquist Maximum Frequency
 const Float32 NyquistMaxFreq = SAMPLE_RATE/2.0;
@@ -71,6 +78,8 @@ Float32 *windowBuffer= NULL;
 static Float32 vectorMaxValueACC32_index(Float32 *vector, unsigned long size, long step, unsigned long *outIndex) {
     Float32 maxVal;
     vDSP_maxvi(vector, step, &maxVal, outIndex, size);
+    //
+    
     return maxVal;
 }
 
@@ -107,34 +116,75 @@ __weak NSString *hzString = nil;
 void AudioCallback( Float32 * buffer, UInt32 frameSize, void * userData )
 {
     //take only data from 1 channel
-    Float32 zero = 0.0;
     
-    vDSP_vsadd(buffer, 2, &zero, buffer, 1, frameSize*NUMCHANNELS);    
+    
+    Float32 zero = 0.0;
+    //    int ffthalfsize = FFTSIZE/2;
+    //
+    //    float *magnitude = (float *)malloc(sizeof(float)*ffthalfsize);
+    //    DSPSplitComplex *SplitComplex;
+    //    vDSP_zvabs(SplitComplex, 1, magnitude, 1,  frameSize*NUMCHANNELS);
+    //    for (int i=0;i<ffthalfsize;i++)
+    //    {
+    //       NSLog(@" magnitude ==  %.40f",magnitude[i]);
+    //
+    //    }
+    vDSP_vsadd(buffer, 2, &zero, buffer, 1, frameSize*NUMCHANNELS);
+    
+    
     if (accumulateFrames(buffer, frameSize)==YES) { //if full
         
         //windowing the time domain data before FFT (using Blackman Window)
         if (windowBuffer==NULL) { windowBuffer = (Float32*) malloc(sizeof(Float32)*windowLength); }
         vDSP_blkman_window(windowBuffer, windowLength, 0);
         vDSP_vmul(dataAccumulator, 1, windowBuffer, 1, dataAccumulator, 1, accumulatorDataLenght);
-//        //=========================================
-//        
-//        
-       Float32 maxHZValue = 0;
-       Float32 maxHZ = strongestFrequencyHZ(dataAccumulator, fftConverter, accumulatorDataLenght, &maxHZValue);
+        //        //=========================================
+        //
+        //
+        Float32 maxHZValue = 0;
+        Float32 maxHZ = strongestFrequencyHZ(dataAccumulator, fftConverter, accumulatorDataLenght, &maxHZValue);
         hzString = [NSString stringWithFormat:@"%0.3f",maxHZ];
-     //  NSLog(@" max HZ = %0.3f ", maxHZ);
-       
-       
+        
+        
+        
         
         emptyAccumulator(); //empty the accumulator when finished
     }
     memset(buffer, 0, sizeof(Float32)*frameSize*NUMCHANNELS);
 }
 
-
+//static void performFFT(float* data, UInt32 numberOfFrames, UInt32 inBusNumber) {
+//
+//    int bufferLog2 = round(log2(numberOfFrames));
+//    float fftNormFactor = 1.0/( 2 * numberOfFrames);
+//
+//    FFTSetup fftSetup = vDSP_create_fftsetup(bufferLog2, kFFTRadix2);
+//
+//    int numberOfFramesOver2 = numberOfFrames / 2;
+//    float outReal[numberOfFramesOver2];
+//    float outImaginary[numberOfFramesOver2];
+//
+//    COMPLEX_SPLIT output = { .realp = outReal, .imagp = outImaginary };
+//
+//    //Put all of the even numbered elements into outReal and odd numbered into outImaginary
+//    vDSP_ctoz((COMPLEX *)data, 2, &output, 1, numberOfFramesOver2);
+//
+//    //Perform the FFT via Accelerate
+//    //Use FFT forward for standard PCM audio
+//    vDSP_fft_zrip(fftSetup, &output, 1, bufferLog2, FFT_FORWARD);
+//
+//    //Scale the FFT data
+//    vDSP_vsmul(output.realp, 1, &fftNormFactor, output.realp, 1, numberOfFramesOver2);
+//    vDSP_vsmul(output.imagp, 1, &fftNormFactor, output.imagp, 1, numberOfFramesOver2);
+//
+//    //Take the absolute value of the output to get in range of 0 to 1
+//    vDSP_zvabs(&output, 1, soundBuffer[inBusNumber].frequencyData, 1, numberOfFramesOver2);
+//
+//    vDSP_destroy_fftsetup(fftSetup);
+//}
 
 @interface ViewController ()<UITableViewDelegate,UITableViewDataSource,LineChartCellDelegate>{
- 
+    
     AVAudioRecorder  *recorder;
     NSTimer   *levelTimer;
     UITableView *bgView;
@@ -158,11 +208,12 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
+    
     return UIStatusBarStyleLightContent;
 }
 -(void)viewWillAppear:(BOOL)animated
 {
-   yData = [NSUserDefaults standardUserDefaults];
+    yData = [NSUserDefaults standardUserDefaults];
     yArray =[NSMutableArray array];
 }
 - (void)viewDidLoad {
@@ -177,15 +228,36 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
     [self initMomuAudio];
     [self hzAudio];
     [self dbAction];
-  //  [self  timeFB];
+    [self  fftTest];
+    
+    
+    
     
     UITapGestureRecognizer *tapHide = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewTapped:)];
     tapHide.cancelsTouchesInView = NO;
     
     [self.view addGestureRecognizer:tapHide];
     
- 
     
+    
+    
+    
+}
+-(void)fftTest
+{
+   // FFT;
+    int ffthalfsize = FFTSIZE/2;
+    
+    float *magnitude = (float *)malloc(sizeof(float)*ffthalfsize);
+    DSPSplitComplex *SplitComplex = new DSPSplitComplex;
+    SplitComplex->realp = (float *)malloc(sizeof(float)*ffthalfsize);
+    SplitComplex->imagp = (float *)malloc(sizeof(float)*ffthalfsize);
+    vDSP_zvabs(SplitComplex, 1, magnitude, 1,ffthalfsize);
+    for (int i=0;i<ffthalfsize;i++)
+    {
+        NSLog(@" magnitude ==  %f",magnitude[i]);
+        
+    }
     
 }
 -(void)viewTapped:(UITapGestureRecognizer*)tapGr
@@ -194,7 +266,7 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
 }
 -(void)timeFB
 {
-
+    
     reloadTime = [NSTimer scheduledTimerWithTimeInterval:0.001 target:self selector:@selector(reloadState:) userInfo:nil repeats:YES];
     
     [[NSRunLoop mainRunLoop] addTimer:reloadTime forMode:NSRunLoopCommonModes];
@@ -224,8 +296,8 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
     // Setup time domain audio plot
     //
     self.audioPlotTime.plotType = EZPlotTypeBuffer;
-   
-
+    
+    
     
     //
     // Setup frequency domain audio plot
@@ -233,28 +305,33 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
     self.audioPlotFreq.shouldFill = YES;
     self.audioPlotFreq.plotType = EZPlotTypeBuffer;
     self.audioPlotFreq.shouldCenterYAxis = NO;
-//
-//    //
-//    // Create an instance of the microphone and tell it to use this view controller instance as the delegate
-//    //
-   self.microphone = [EZMicrophone microphoneWithDelegate:self];
-//    
-//    //
-//    // Create an instance of the EZAudioFFTRolling to keep a history of the incoming audio data and calculate the FFT.
-//    //
-   self.fft = [EZAudioFFTRolling fftWithWindowSize:FFTViewControllerFFTWindowSize
+    //
+    //    //
+    //    // Create an instance of the microphone and tell it to use this view controller instance as the delegate
+    //    //
+    self.microphone = [EZMicrophone microphoneWithDelegate:self];
+    //
+    //    //
+    //    // Create an instance of the EZAudioFFTRolling to keep a history of the incoming audio data and calculate the FFT.
+    //    //
+    self.fft = [EZAudioFFTRolling fftWithWindowSize:FFTViewControllerFFTWindowSize
                                          sampleRate:self.microphone.audioStreamBasicDescription.mSampleRate
-                                          delegate:self];
-//
-//    //
-//    // Start the mic
-//    //
-   [self.microphone startFetchingAudio];
-
+                                           delegate:self];
+    //
+    //    //
+    //    // Start the mic
+    //    //
+    [self.microphone startFetchingAudio];
+    
 }
 
 -(void)dbAction
 {
+    
+    
+    
+    
+    
     [[AVAudioSession sharedInstance]
      setCategory: AVAudioSessionCategoryPlayAndRecord error:nil];
     NSURL *url = [NSURL fileURLWithPath:@"/dev/null"];
@@ -273,14 +350,14 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
         [recorder prepareToRecord];
         recorder.meteringEnabled = YES;
         [recorder record];
-        levelTimer = [NSTimer scheduledTimerWithTimeInterval:0.001 target: self selector: @selector(levelTimerCallback:) userInfo: nil repeats: YES];
+        levelTimer = [NSTimer scheduledTimerWithTimeInterval:0.25 target: self selector: @selector(levelTimerCallback:) userInfo: nil repeats: YES];
     }
     else
     {
         NSLog(@"%@", [error description]);
     }
     
-
+    
 }
 /* 该方法确实会随环境音量变化而变化，但具体分贝值是否准确暂时没有研究 */
 - (void)levelTimerCallback:(NSTimer *)timer {
@@ -311,17 +388,17 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
     fbString = [NSString stringWithFormat:@"db:%f",level*120];
     /* level 范围[0 ~ 1], 转为[0 ~120] 之间 */
     [yArray addObject:[NSString stringWithFormat:@"%f", level*120]];
-
-    [yData setValue:yArray forKey:@"ydata"];
- //
     
- 
-   //
+    [yData setValue:yArray forKey:@"ydata"];
+    //
+    
+    
+    //
 }
 
 - (void)reloadState:(NSTimer *)t{
-
-       // sView.mpointArr = [NSMutableArray arrayWithArray:self.pointArr];
+    
+    // sView.mpointArr = [NSMutableArray arrayWithArray:self.pointArr];
     
     
     if (yArray.count > 100)
@@ -330,7 +407,7 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
         [[NSUserDefaults standardUserDefaults]removePersistentDomainForName:@"ydata"];
         [bgView reloadData];
     }
-  
+    
     
 }
 
@@ -338,8 +415,8 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
     bool result = false;
     result = MoAudio::init( SAMPLE_RATE, FRAMESIZE, NUMCHANNELS, false);
     if (!result) { NSLog(@" MoAudio init ERROR"); }
-     result = MoAudio::start( AudioCallback, NULL );
-     if (!result) { NSLog(@" MoAudio start ERROR"); }
+    result = MoAudio::start( AudioCallback, NULL );
+    if (!result) { NSLog(@" MoAudio start ERROR"); }
 }
 
 
@@ -351,7 +428,7 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
     UILongPressGestureRecognizer * longPressGr = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressToDo:)];
     longPressGr.minimumPressDuration = 0.25;
     [self.view addGestureRecognizer:longPressGr];
-   
+    
     
     bgView = [[UITableView alloc] initWithFrame:
               CGRectMake(0,
@@ -412,14 +489,14 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundColor = [UIColor clearColor];
-    _audioPlotTime =[[EZAudioPlot alloc]initWithFrame:CGRectMake(25, cell.bounds.size.height/3, cell.bounds.size.width, cell.bounds.size.height/2)];
-    _audioPlotTime.backgroundColor =[UIColor clearColor];
-    _audioPlotTime.color =[UIColor whiteColor];
-     self.audioPlotTime.gain = 300;
-    [cell addSubview:_audioPlotTime];
-   /* spview =[[SPView alloc]initWithFrame:CGRectMake(25, 25, cell.bounds.size.width, cell.bounds.size.height - 120)];
-    spview.backgroundColor =[UIColor clearColor];
-    [cell addSubview:spview];*/
+        _audioPlotTime =[[EZAudioPlot alloc]initWithFrame:CGRectMake(25, cell.bounds.size.height/3, cell.bounds.size.width, cell.bounds.size.height/2)];
+        _audioPlotTime.backgroundColor =[UIColor clearColor];
+        _audioPlotTime.color =[UIColor whiteColor];
+         self.audioPlotTime.gain = 300;
+        [cell addSubview:_audioPlotTime];
+//    spview =[[SPView alloc]initWithFrame:CGRectMake(25, 25, cell.bounds.size.width, cell.bounds.size.height - 120)];
+//    spview.backgroundColor =[UIColor clearColor];
+//    [cell addSubview:spview];
     
     cell.delegate = self;
     return cell;
@@ -454,19 +531,23 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
          bufferSize:(vDSP_Length)bufferSize
 {
     float maxFrequency = [fft maxFrequency];
-   // NSString *noteName = [EZAudioUtilities noteNameStringForFrequency:maxFrequency
-   //                                                     includeOctave:YES];
+    // NSString *noteName = [EZAudioUtilities noteNameStringForFrequency:maxFrequency
+    //                                                     includeOctave:YES];
+    //     float *buffer;
+    
     
     __weak typeof (self) weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
-       NSString *string = [NSString stringWithFormat:@"hz:%.2f %@",  maxFrequency,fbString];
-       // NSLog(@"%@",string);
+        NSString *string = [NSString stringWithFormat:@"%.2fHz: %@",  maxFrequency,fbString];
+        
+        NSLog(@"%@",string);
+        
         label.text = string;
         [weakSelf.audioPlotFreq updateBuffer:fftData withBufferSize:(UInt32)bufferSize];
     });
 }
 -(void)reloadView
 {
-
+    
 }
 @end
