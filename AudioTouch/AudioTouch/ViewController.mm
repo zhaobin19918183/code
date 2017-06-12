@@ -152,6 +152,39 @@ void AudioCallback( Float32 * buffer, UInt32 frameSize, void * userData )
     }
     memset(buffer, 0, sizeof(Float32)*frameSize*NUMCHANNELS);
 }
+void FFT(float *wavedata, DSPSplitComplex *splitComplex)
+
+{
+    int ffthalfsize = FFTSIZE/2;
+    vDSP_Length log2n = log2(FFTSIZE);
+    
+    //setup fft
+    FFTSetup fftsetup = vDSP_create_fftsetup(log2n, kFFTRadix2);
+    
+    //make window (fft size)
+    float *window =(float *) malloc(sizeof(float)*FFTSIZE);
+    //hanning window
+    vDSP_hann_window(window, FFTSIZE, 0);
+    //windowing
+    vDSP_vmul(wavedata, 1, window, 1, wavedata, 1, FFTSIZE);
+    
+    
+    //transform to complex
+    vDSP_ctoz( ( COMPLEX * )wavedata, 2, splitComplex, 1, ffthalfsize );
+    
+    //FFT forward
+    vDSP_fft_zrip(fftsetup, splitComplex, 1, log2n, FFT_FORWARD);
+    
+    //scaling
+    float scale = 1.0/(FFTSIZE*2);
+    vDSP_vsmul(splitComplex->realp, 1, &scale, splitComplex->realp, 1, ffthalfsize);
+    vDSP_vsmul(splitComplex->imagp, 1, &scale, splitComplex->imagp, 1, ffthalfsize);
+    
+    //free
+    vDSP_destroy_fftsetup(fftsetup);
+    free(window);
+    
+}
 
 //static void performFFT(float* data, UInt32 numberOfFrames, UInt32 inBusNumber) {
 //
@@ -198,7 +231,7 @@ void AudioCallback( Float32 * buffer, UInt32 frameSize, void * userData )
 
 
 @end
-static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
+static vDSP_Length const FFTViewControllerFFTWindowSize = 2048;
 @implementation ViewController
 
 
@@ -246,15 +279,26 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
 -(void)fftTest
 {
    // FFT;
-    int ffthalfsize = FFTSIZE/2;
+    float *buffer;
+    buffer = (float *) malloc(FFTSIZE*sizeof(float));
+    int i;
+    for(i=0;i<FFTSIZE;i++)
+    {
+        buffer[i] = AMPLITUDE * sin((float)FREQUENCY / SAMPLE_RATE * 2 * PAI * i);
+    }
     
-    float *magnitude = (float *)malloc(sizeof(float)*ffthalfsize);  //动态分配ffthalfsize个连续的float内存地址
+    int ffthalfsize = FFTSIZE/2;
+  
     DSPSplitComplex *SplitComplex = new DSPSplitComplex;
     SplitComplex->realp = (float *)malloc(sizeof(float)*ffthalfsize);
     SplitComplex->imagp = (float *)malloc(sizeof(float)*ffthalfsize);
+    float *magnitude = (float *)malloc(sizeof(float)*ffthalfsize);  //动态分配ffthalfsize个连续的float内存地址
+    FFT(buffer,SplitComplex);
+    
     vDSP_zvabs(SplitComplex, 1, magnitude, 1,ffthalfsize);
     for (int i=0;i<ffthalfsize;i++)
     {
+        
         NSLog(@" magnitude ==  %f",magnitude[i]);
         
     }
@@ -316,7 +360,7 @@ static vDSP_Length const FFTViewControllerFFTWindowSize = 4096;
     //    // Create an instance of the EZAudioFFTRolling to keep a history of the incoming audio data and calculate the FFT.
     //    //
     self.fft = [EZAudioFFTRolling fftWithWindowSize:FFTViewControllerFFTWindowSize
-                                         sampleRate:self.microphone.audioStreamBasicDescription.mSampleRate
+                                         sampleRate:self.microphone.audioStreamBasicDescription.mFormatID
                                            delegate:self];
     //
     //    //
